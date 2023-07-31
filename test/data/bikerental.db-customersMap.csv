@@ -1,0 +1,8 @@
+email;bupaID;paymentMethod;cardNo
+alice;10100001;PayPal;
+bob;10100002;Credit Card;4263982640269299
+global-bike-rental-customer@ibsolution.de;1000011;PayPal;
+tk.dang@tum.de;10100001;Credit Card;378282246310005
+leonard.benthake@tum.de;10100001;Credit Card;378282246310005
+rebecca.naetscher@tum.de;10100001;Credit Card;378282246310005
+silas.meilbeck@tum.de;10100001;Credit Card;378282246310005

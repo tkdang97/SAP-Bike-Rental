@@ -1,0 +1,27 @@
+/* Enter your custom styles here */
+
+.gridItem {
+    align-items: center;
+}
+
+.infoButton {
+    max-height: 1% !important;
+    font-size: 1% !important;
+    color: blue;
+    background-color: blue;
+    border-radius: 50%;
+    max-width: 1% !important;
+}
+
+.gridItemFirst {
+    align-items: center;
+    margin-top: 10%;
+}
+
+.availableText {
+    color:green
+}
+
+.unavailableText {
+    color:red
+}

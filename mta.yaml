@@ -1,0 +1,179 @@
+_schema-version: "3.1"
+ID: BikeRental
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: BikeRental-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: BikeRental-destination-service
+    parameters:
+      content-target: true
+  - name: BikeRental-repo-host
+    parameters:
+      service-key:
+        name: BikeRental-repo-host-key
+  - name: BikeRental-auth
+    parameters:
+      service-key:
+        name: BikeRental-auth-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: BikeRental_repo_host
+          ServiceInstanceName: BikeRental-html5-srv
+          ServiceKeyName: BikeRental-repo-host-key
+          sap.cloud.service: BikeRental
+        - Authentication: OAuth2UserTokenExchange
+          Name: BikeRental_auth
+          ServiceInstanceName: BikeRental-auth
+          ServiceKeyName: BikeRental-auth-key
+          sap.cloud.service: BikeRental
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+- name: BikeRental-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: BikeRental-auth
+  - name: BikeRental-destination-service
+  - name: BikeRental-db
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+  build-parameters:
+    builder: npm-ci
+- name: BikeRental-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: BikeRental-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: BikeRental-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: BikeRental-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - serviceorders_by_customer.zip
+      name: serviceorders_by_customer
+      target-path: resources/
+    - artifacts:
+      - checkout.zip
+      name: checkout
+      target-path: resources/
+    - artifacts:
+      - bikemap.zip
+      name: bikemap
+      target-path: resources/
+    - artifacts:
+      - orderhistory.zip
+      name: orderhistory
+      target-path: resources/
+- name: serviceorders_by_customer
+  type: html5
+  path: app/serviceorders_by_customer
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: checkout
+  type: html5
+  path: app/checkout
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: bikemap
+  type: html5
+  path: app/bikemap
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: orderhistory
+  type: html5
+  path: app/orderhistory
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: BikeRental-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: BikeRental-auth
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: BikeRental-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+- name: BikeRental-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: BikeRental-html5-srv
+    service-plan: app-host
+- name: BikeRental-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: BikeRental-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: BikeRental-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npx -p @sap/cds-dk cds build --production

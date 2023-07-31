@@ -1,0 +1,41 @@
+<!-- Definition of the layout of the detail window -->
+
+<core:FragmentDefinition xmlns:cssgrid="sap.ui.layout.cssgrid"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:grid="sap.ui.layout.cssgrid"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+    <VBox alignItems="End" class="sapUISmallMargin" alignContent="End" wrap="Wrap">
+		<grid:CSSGrid gridTemplateColumns="130px 130px"
+			gridTemplateRows="auto auto"
+			gridRowGap="20px"
+			gridColumnGap="30px"
+			gridAutoFlow="Column">			
+			<VBox class="gridItem" alignContent="End" alignItems="End">
+				<Label text="Model"/>
+				<Text text="{model}"/>
+			</VBox>
+			<VBox class="gridItem" alignContent="End" alignItems="End">
+				<Label text="Price"></Label>
+				<Text text="0.119 EUR/MIN"></Text>
+			</VBox>
+			<VBox class="gridItem" alignItems="Center" alignContent="Center">
+				<Label text="Distance"></Label>
+				<Text text="{viewModel>/distance} km" class="availableText" visible="{= ${viewModel>/distance} > ${viewModel>/maxDist} ? false : true}"></Text>
+				<Text text="{viewModel>/distance} km" class="unavailableText" visible="{= ${viewModel>/distance} > ${viewModel>/maxDist} ? true : false}"></Text>
+			</VBox>
+			<VBox class="gridItem" alignItems="Center" alignContent="Center">
+				<Label text="Status"></Label>
+				<Text text="Available" class='availableText' visible="{= ${path: 'status', targetType: 'any'} === 1 ? true : false}"></Text>
+				<Text text="Rented" class='unavailableText' visible="{= ${path: 'status', targetType: 'any'} === 1 ? false : true}"></Text>
+			</VBox>
+		</grid:CSSGrid>		
+        <Button
+			text="Rent"
+			press="handleRentPress" 
+			type="{= ${path: 'status', targetType: 'any'} === 1 ? ${viewModel>/maxDist} >= ${viewModel>/distance} ? 'Accept' : 'Reject' : 'Reject'}"
+			enabled="{= ${path: 'status', targetType: 'any'} === 1 ? ${viewModel>/maxDist} >= ${viewModel>/distance} ? true : false : false}"/>
+	</VBox>
+		
+</core:FragmentDefinition>

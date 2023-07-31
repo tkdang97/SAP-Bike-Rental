@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.xml">
+        <edmx:Include Alias="Capabilities" Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Measures.V1.xml">
+        <edmx:Include Alias="Measures" Namespace="Org.OData.Measures.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="ExternalService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Customers" EntityType="ExternalService.Customers">
+                    <NavigationPropertyBinding Path="addresses" Target="CustomerAddresses"/>
+                </EntitySet>
+                <EntitySet Name="CustomerAddresses" EntityType="ExternalService.CustomerAddresses">
+                    <NavigationPropertyBinding Path="mailAddresses" Target="CustomerMails"/>
+                </EntitySet>
+                <EntitySet Name="CustomerMails" EntityType="ExternalService.CustomerMails"/>
+                <EntitySet Name="ServiceOrders" EntityType="ExternalService.ServiceOrders">
+                    <NavigationPropertyBinding Path="orderItems" Target="ServiceOrderItems"/>
+                    <NavigationPropertyBinding Path="refObjects" Target="ServiceOrderObjects"/>
+                    <NavigationPropertyBinding Path="confirmation" Target="ServiceOrderConfirmations"/>
+                    <NavigationPropertyBinding Path="responsible" Target="ServiceOrderPersonResp"/>
+                </EntitySet>
+                <EntitySet Name="ServiceOrderItems" EntityType="ExternalService.ServiceOrderItems">
+                    <NavigationPropertyBinding Path="priceElement" Target="ServiceOrderItemPriceElements"/>
+                </EntitySet>
+                <EntitySet Name="ServiceOrderObjects" EntityType="ExternalService.ServiceOrderObjects"/>
+                <EntitySet Name="ServiceOrderConfirmations" EntityType="ExternalService.ServiceOrderConfirmations"/>
+                <EntitySet Name="ServiceOrderPersonResp" EntityType="ExternalService.ServiceOrderPersonResp"/>
+                <EntitySet Name="ServiceOrderItemPriceElements" EntityType="ExternalService.ServiceOrderItemPriceElements"/>
+                <EntitySet Name="Bikes" EntityType="ExternalService.Bikes"/>
+                <EntitySet Name="BikesMap" EntityType="ExternalService.BikesMap"/>
+                <EntitySet Name="MeasuringDocs" EntityType="ExternalService.MeasuringDocs"/>
+                <EntitySet Name="MeasuringPoints" EntityType="ExternalService.MeasuringPoints"/>
+                <EntitySet Name="ServiceConfirmations" EntityType="ExternalService.ServiceConfirmations">
+                    <NavigationPropertyBinding Path="confirmationItem" Target="ServiceConfirmationItems"/>
+                    <NavigationPropertyBinding Path="refObjects" Target="ServiceConfirmationObjects"/>
+                </EntitySet>
+                <EntitySet Name="ServiceConfirmationItems" EntityType="ExternalService.ServiceConfirmationItems"/>
+                <EntitySet Name="ServiceConfirmationObjects" EntityType="ExternalService.ServiceConfirmationObjects"/>
+                <EntitySet Name="ServiceOrdersByCustomer" EntityType="ExternalService.ServiceOrdersByCustomer">
+                    <NavigationPropertyBinding Path="orderItems" Target="ServiceOrderItems"/>
+                    <NavigationPropertyBinding Path="refObjects" Target="ServiceOrderObjects"/>
+                    <NavigationPropertyBinding Path="confirmation" Target="ServiceOrderConfirmations"/>
+                    <NavigationPropertyBinding Path="responsible" Target="ServiceOrderPersonResp"/>
+                </EntitySet>
+                <EntitySet Name="BillingDocs" EntityType="ExternalService.BillingDocs"/>
+                <EntitySet Name="ServiceOrderHistory" EntityType="ExternalService.ServiceOrderHistory">
+                    <NavigationPropertyBinding Path="orderItems" Target="ServiceOrderItems"/>
+                    <NavigationPropertyBinding Path="refObjects" Target="ServiceOrderObjects"/>
+                    <NavigationPropertyBinding Path="confirmation" Target="ServiceOrderConfirmations"/>
+                    <NavigationPropertyBinding Path="responsible" Target="ServiceOrderPersonResp"/>
+                </EntitySet>
+                <FunctionImport Name="GetPDF" Function="ExternalService.GetPDF"/>
+                <ActionImport Name="updateBikeLocation" Action="ExternalService.updateBikeLocation"/>
+                <ActionImport Name="updateBikeInfos" Action="ExternalService.updateBikeInfos"/>
+            </EntityContainer>
+            <EntityType Name="Customers">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="BusinessPartnerFullName" Type="Edm.String" MaxLength="81"/>
+                <Property Name="FirstName" Type="Edm.String" MaxLength="40"/>
+                <Property Name="LastName" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="addresses" Type="Collection(ExternalService.CustomerAddresses)"/>
+            </EntityType>
+            <EntityType Name="CustomerAddresses">
+                <Key>
+                    <PropertyRef Name="bupaID"/>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="bupaID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="postcode" Type="Edm.String" MaxLength="10"/>
+                <Property Name="city" Type="Edm.String" MaxLength="40"/>
+                <Property Name="street" Type="Edm.String" MaxLength="60"/>
+                <Property Name="number" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="mailAddresses" Type="Collection(ExternalService.CustomerMails)"/>
+            </EntityType>
+            <EntityType Name="CustomerMails">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="personalID"/>
+                    <PropertyRef Name="ordinal"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="personalID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="ordinal" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="Email" Type="Edm.String" MaxLength="241"/>
+            </EntityType>
+            <EntityType Name="ServiceOrders">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="type" Type="Edm.String" MaxLength="4"/>
+                <Property Name="startDate" Type="Edm.DateTimeOffset"/>
+                <Property Name="endDate" Type="Edm.DateTimeOffset"/>
+                <Property Name="isComplete" Type="Edm.String" MaxLength="1"/>
+                <Property Name="isReleased" Type="Edm.String" MaxLength="1"/>
+                <Property Name="customer" Type="Edm.String" MaxLength="10"/>
+                <Property Name="cost" Type="Edm.Decimal" Scale="3" Precision="16"/>
+                <Property Name="currency" Type="Edm.String" MaxLength="5"/>
+                <NavigationProperty Name="orderItems" Type="Collection(ExternalService.ServiceOrderItems)"/>
+                <NavigationProperty Name="refObjects" Type="Collection(ExternalService.ServiceOrderObjects)"/>
+                <NavigationProperty Name="confirmation" Type="Collection(ExternalService.ServiceOrderConfirmations)"/>
+                <NavigationProperty Name="responsible" Type="Collection(ExternalService.ServiceOrderPersonResp)"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderItems">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="orderID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="6" Nullable="false"/>
+                <Property Name="orderID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="Product" Type="Edm.String" MaxLength="54"/>
+                <Property Name="Quantity" Type="Edm.Decimal" Scale="3" Precision="13"/>
+                <Property Name="QuantityUnit" Type="Edm.String" MaxLength="3"/>
+                <Property Name="ProfitCenter" Type="Edm.String" MaxLength="10"/>
+                <NavigationProperty Name="priceElement" Type="Collection(ExternalService.ServiceOrderItemPriceElements)"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderObjects">
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="equipmentID" Type="Edm.String" MaxLength="18" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderConfirmations">
+                <Key>
+                    <PropertyRef Name="ServiceOrder"/>
+                    <PropertyRef Name="ServiceConfirmation"/>
+                </Key>
+                <Property Name="ServiceOrder" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="ServiceConfirmation" Type="Edm.String" MaxLength="10" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderPersonResp">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="employeeID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="employeeID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="isMain" Type="Edm.Boolean"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderItemPriceElements">
+                <Key>
+                    <PropertyRef Name="orderID"/>
+                    <PropertyRef Name="itemID"/>
+                    <PropertyRef Name="step"/>
+                    <PropertyRef Name="cnt"/>
+                </Key>
+                <Property Name="orderID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="itemID" Type="Edm.String" MaxLength="6" Nullable="false"/>
+                <Property Name="step" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="cnt" Type="Edm.String" MaxLength="3" Nullable="false"/>
+                <Property Name="rate" Type="Edm.Decimal" Scale="9" Precision="24"/>
+                <Property Name="currency" Type="Edm.String" MaxLength="5"/>
+            </EntityType>
+            <EntityType Name="Bikes">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="validTo"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="18" Nullable="false"/>
+                <Property Name="equipCategory" Type="Edm.String" MaxLength="1"/>
+                <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+                <Property Name="productID" Type="Edm.String" MaxLength="40"/>
+                <Property Name="serialNo" Type="Edm.String" MaxLength="18"/>
+                <Property Name="manufacturer" Type="Edm.String" MaxLength="30"/>
+                <Property Name="model" Type="Edm.String" MaxLength="20"/>
+            </EntityType>
+            <EntityType Name="BikesMap">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="validTo"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="18" Nullable="false"/>
+                <Property Name="validTo" Type="Edm.Date" Nullable="false"/>
+                <Property Name="equipCategory" Type="Edm.String" MaxLength="1"/>
+                <Property Name="productID" Type="Edm.String" MaxLength="40"/>
+                <Property Name="serialNo" Type="Edm.String" MaxLength="18"/>
+                <Property Name="manufacturer" Type="Edm.String" MaxLength="30"/>
+                <Property Name="model" Type="Edm.String" MaxLength="20"/>
+                <Property Name="longitude" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="latitude" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="status" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="MeasuringDocs">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="20" Nullable="false"/>
+                <Property Name="pointID" Type="Edm.String" MaxLength="12" Nullable="false"/>
+                <Property Name="readingDate" Type="Edm.DateTimeOffset" Precision="0"/>
+                <Property Name="unit" Type="Edm.String" MaxLength="3"/>
+                <Property Name="readingValue" Type="Edm.Double"/>
+            </EntityType>
+            <EntityType Name="MeasuringPoints">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="12" Nullable="false"/>
+                <Property Name="description" Type="Edm.String" MaxLength="40"/>
+                <Property Name="category" Type="Edm.String" MaxLength="1"/>
+                <Property Name="unit" Type="Edm.String" MaxLength="3"/>
+                <Property Name="equipmentID" Type="Edm.String" MaxLength="18"/>
+                <Property Name="characteristic" Type="Edm.String" MaxLength="10"/>
+            </EntityType>
+            <EntityType Name="ServiceConfirmations">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="orderID" Type="Edm.String" MaxLength="10"/>
+                <Property Name="isFinal" Type="Edm.String" MaxLength="1"/>
+                <Property Name="type" Type="Edm.String" MaxLength="4"/>
+                <Property Name="isComplete" Type="Edm.String" MaxLength="1"/>
+                <NavigationProperty Name="confirmationItem" Type="Collection(ExternalService.ServiceConfirmationItems)"/>
+                <NavigationProperty Name="refObjects" Type="Collection(ExternalService.ServiceConfirmationObjects)"/>
+            </EntityType>
+            <EntityType Name="ServiceConfirmationItems">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="itemID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="itemID" Type="Edm.String" MaxLength="6" Nullable="false"/>
+                <Property Name="Product" Type="Edm.String" MaxLength="54"/>
+                <Property Name="Quantity" Type="Edm.Decimal" Scale="3" Precision="13"/>
+                <Property Name="QuantityUnit" Type="Edm.String" MaxLength="3"/>
+                <Property Name="execEmployee" Type="Edm.String" MaxLength="10"/>
+                <Property Name="actualDuration" Type="Edm.Decimal" Scale="2" Precision="7"/>
+                <Property Name="durationUnit" Type="Edm.String" MaxLength="3"/>
+                <Property Name="orderID" Type="Edm.String" MaxLength="10"/>
+                <Property Name="orderItemID" Type="Edm.String" MaxLength="6"/>
+            </EntityType>
+            <EntityType Name="ServiceConfirmationObjects">
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="equipmentID" Type="Edm.String" MaxLength="18" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="ServiceOrdersByCustomer">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="type" Type="Edm.String" MaxLength="4"/>
+                <Property Name="startDate" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="endDate" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="isComplete" Type="Edm.String" MaxLength="1"/>
+                <Property Name="isReleased" Type="Edm.String" MaxLength="1"/>
+                <Property Name="customer" Type="Edm.String" MaxLength="10"/>
+                <Property Name="cost" Type="Edm.Decimal" Scale="3" Precision="16"/>
+                <Property Name="currency" Type="Edm.String" MaxLength="5"/>
+                <Property Name="currentDuration" Type="Edm.String"/>
+                <NavigationProperty Name="orderItems" Type="Collection(ExternalService.ServiceOrderItems)"/>
+                <NavigationProperty Name="refObjects" Type="Collection(ExternalService.ServiceOrderObjects)"/>
+                <NavigationProperty Name="confirmation" Type="Collection(ExternalService.ServiceOrderConfirmations)"/>
+                <NavigationProperty Name="responsible" Type="Collection(ExternalService.ServiceOrderPersonResp)"/>
+            </EntityType>
+            <EntityType Name="BillingDocs">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="orderID" Type="Edm.String" MaxLength="16"/>
+                <Property Name="customer" Type="Edm.String" MaxLength="10"/>
+            </EntityType>
+            <EntityType Name="ServiceOrderHistory">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="type" Type="Edm.String" MaxLength="4"/>
+                <Property Name="startDate" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="endDate" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="isComplete" Type="Edm.String" MaxLength="1"/>
+                <Property Name="isReleased" Type="Edm.String" MaxLength="1"/>
+                <Property Name="customer" Type="Edm.String" MaxLength="10"/>
+                <Property Name="cost" Type="Edm.Double"/>
+                <Property Name="currency" Type="Edm.String" MaxLength="5"/>
+                <Property Name="currentDuration" Type="Edm.String"/>
+                <NavigationProperty Name="orderItems" Type="Collection(ExternalService.ServiceOrderItems)"/>
+                <NavigationProperty Name="refObjects" Type="Collection(ExternalService.ServiceOrderObjects)"/>
+                <NavigationProperty Name="confirmation" Type="Collection(ExternalService.ServiceOrderConfirmations)"/>
+                <NavigationProperty Name="responsible" Type="Collection(ExternalService.ServiceOrderPersonResp)"/>
+            </EntityType>
+            <Function Name="GetPDF" IsBound="false" IsComposable="false">
+                <Parameter Name="orderID" Type="Edm.String"/>
+                <ReturnType Type="Edm.String"/>
+            </Function>
+            <Action Name="updateBikeLocation" IsBound="false">
+                <Parameter Name="bikeID" Type="Edm.String"/>
+                <Parameter Name="latitude" Type="Edm.Double"/>
+                <Parameter Name="longitude" Type="Edm.Double"/>
+                <ReturnType Type="Edm.Int32"/>
+            </Action>
+            <Action Name="updateBikeInfos" IsBound="false">
+                <Parameter Name="manufacturer" Type="Edm.String"/>
+                <Parameter Name="model" Type="Edm.String"/>
+            </Action>
+            <Annotations Target="ExternalService.MeasuringDocs">
+                <Annotation Term="Common.Label" String="Measurement Documents"/>
+                <Annotation Term="Common.Messages" Path="SAP__Messages"/>
+            </Annotations>
+            <Annotations Target="ExternalService.EntityContainer/MeasuringDocs">
+                <Annotation Term="Capabilities.NavigationRestrictions">
+                    <Record Type="Capabilities.NavigationRestrictionsType">
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record Type="Capabilities.NavigationPropertyRestriction">
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_MeasurementDocumentLongText"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record Type="Capabilities.InsertRestrictionsType">
+                                            <PropertyValue Property="Insertable" Bool="true"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.SearchRestrictions">
+                    <Record Type="Capabilities.SearchRestrictionsType">
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record Type="Capabilities.FilterRestrictionsType">
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointPositionNumber"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="Characteristic"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtDocumentReferredOrder"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="RefdMaintOrderOpStatusObject"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MaintenanceOrderOperation"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MaintenanceOrderSubOperation"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtIsDoneAfterTaskCompltn"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasurementReading"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasurementReadingInEntryUoM"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasurementCounterReading"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtCounterReadingDifference"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="TotalMsmtRdngIsSetExternally"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtValuationCode"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasurementDocumentHasLongText"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtRdngByUser"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtRdngStatus"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtCntrReadingDiffIsEntered"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtRdngIsReversed"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtCounterReadingIsReplaced"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="QueryOptions">
+                            <Record Type="Capabilities.ModificationQueryOptionsType">
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringDocs/ID">
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.IsUpperCase" Bool="true"/>
+                <Annotation Term="Common.Label" String="Measurement document"/>
+                <Annotation Term="Common.QuickInfo" String="Measurement Document"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringDocs/pointID">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Common.IsUpperCase" Bool="true"/>
+                <Annotation Term="Common.Label" String="Measuring point"/>
+                <Annotation Term="Common.Heading" String="MeasPoint"/>
+                <Annotation Term="Common.QuickInfo" String="Measuring Point"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringDocs/readingDate">
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.Label" String="Time Stamp"/>
+                <Annotation Term="Common.QuickInfo" String="UTC Time Stamp in Short Form (YYYYMMDDhhmmss)"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringDocs/unit">
+                <Annotation Term="Common.IsUnit" Bool="true"/>
+                <Annotation Term="Common.Label" String="Document MeasUnit"/>
+                <Annotation Term="Common.Heading" String="DUn"/>
+                <Annotation Term="Common.QuickInfo" String="Unit of Measurement for Document Entry"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringDocs/readingValue">
+                <Annotation Term="Measures.Unit" Path="MeasurementReadingEntryUoM"/>
+                <Annotation Term="Common.Label" String="MeasRdg"/>
+                <Annotation Term="Common.QuickInfo" String="Measurement Reading/Total Counter Reading in SI Unit"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints">
+                <Annotation Term="Common.Label" String="Measuring Points"/>
+                <Annotation Term="Common.Messages" Path="SAP__Messages"/>
+            </Annotations>
+            <Annotations Target="ExternalService.EntityContainer/MeasuringPoints">
+                <Annotation Term="Capabilities.NavigationRestrictions">
+                    <Record Type="Capabilities.NavigationRestrictionsType">
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record Type="Capabilities.NavigationPropertyRestriction">
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="_LongText"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record Type="Capabilities.InsertRestrictionsType">
+                                            <PropertyValue Property="Insertable" Bool="true"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.SearchRestrictions">
+                    <Record Type="Capabilities.SearchRestrictionsType">
+                        <PropertyValue Property="Searchable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.DeleteRestrictions">
+                    <Record Type="Capabilities.DeleteRestrictionsType">
+                        <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.FilterRestrictions">
+                    <Record Type="Capabilities.FilterRestrictionsType">
+                        <PropertyValue Property="FilterExpressionRestrictions">
+                            <Collection>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointObjectIdentifier"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="TechnicalObjectType"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointPositionNumber"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointCategory"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointIsCounter"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointCodeGroup"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="ValuationCodeIsSufficient"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasuringPointIsInactive"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsrgPtIsCountingBackwards"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MeasurementTransferIsSupported"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="FunctionalLocation"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="FunctionalLocationLabelName"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                                <Record Type="Capabilities.FilterExpressionRestrictionType">
+                                    <PropertyValue Property="Property" PropertyPath="MsmtRdngTransferMode"/>
+                                    <PropertyValue Property="AllowedExpressions" String="MultiValue"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="Capabilities.UpdateRestrictions">
+                    <Record Type="Capabilities.UpdateRestrictionsType">
+                        <PropertyValue Property="QueryOptions">
+                            <Record Type="Capabilities.ModificationQueryOptionsType">
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/ID">
+                <Annotation Term="Core.Computed" Bool="true"/>
+                <Annotation Term="Common.IsUpperCase" Bool="true"/>
+                <Annotation Term="Common.Label" String="Measuring point"/>
+                <Annotation Term="Common.Heading" String="MeasPoint"/>
+                <Annotation Term="Common.QuickInfo" String="Measuring Point"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/description">
+                <Annotation Term="Common.Label" String="Description"/>
+                <Annotation Term="Common.Heading" String="Description of measuring point"/>
+                <Annotation Term="Common.QuickInfo" String="Description of Measuring Point"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/category">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+                <Annotation Term="Common.IsUpperCase" Bool="true"/>
+                <Annotation Term="Common.Label" String="MeasPointCategory"/>
+                <Annotation Term="Common.Heading" String="Cat"/>
+                <Annotation Term="Common.QuickInfo" String="Measuring Point Category"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/unit">
+                <Annotation Term="Common.IsUnit" Bool="true"/>
+                <Annotation Term="Common.Label" String="MeasurmntRangeUnit"/>
+                <Annotation Term="Common.Heading" String="MRU"/>
+                <Annotation Term="Common.QuickInfo" String="Measurement Range Unit"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/equipmentID">
+                <Annotation Term="Common.IsUpperCase" Bool="true"/>
+                <Annotation Term="Common.Label" String="Equipment"/>
+                <Annotation Term="Common.QuickInfo" String="Equipment Number"/>
+            </Annotations>
+            <Annotations Target="ExternalService.MeasuringPoints/characteristic">
+                <Annotation Term="Common.IsDigitSequence" Bool="true"/>
+                <Annotation Term="Common.Label" String="Characteristic Internal ID"/>
+            </Annotations>
+            <Annotations Target="ExternalService.ServiceOrdersByCustomer/currentDuration">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="ExternalService.ServiceOrderHistory/cost">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+            <Annotations Target="ExternalService.ServiceOrderHistory/currentDuration">
+                <Annotation Term="Core.Computed" Bool="true"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,39 @@
+/* Enter your custom styles here */
+.checkoutPanel {
+    border: 1px solid #ccc;
+    padding: 16px;
+}
+
+.titleText {
+  margin: 20px 10px 0 10px;
+}
+
+.content {
+  flex-wrap: wrap;
+}
+
+.infoBox {
+  border-radius: 20px;
+  border: 2px solid gray;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.infoText {
+  font-size: medium;
+  margin: 5px;
+}
+  
+.tile {
+  margin: 20px 10px 20px 10px;
+  border: 2px solid gray;
+}
+
+.infoItem {
+  align-items: center;
+  margin: 30px 15px 30px 15px;
+}
+
+.buttonBox {
+  margin-top: 20px;
+}

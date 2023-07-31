@@ -1,0 +1,207 @@
+@url = http://localhost:4004/v2
+@authorization = Basic alice:alice
+
+###
+GET {{url}}/external/Customers
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/Customers?$expand=addresses
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/Customers(ID='10100001')?$expand=addresses($expand=mailAddresses)
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/ServiceOrders
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/ServiceOrders?$filter=customer eq '10100001' and type eq 'SVO1'&$expand=refObjects,orderItems($expand=priceElement),confirmation,responsible
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/ServiceOrders?$filter=ID eq '8000000049'&$expand=refObjects
+Authorization: {{authorization}}
+
+
+###
+POST {{url}}/external/ServiceOrders
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "type": "SVO1",
+    "startDate": "2023-07-08T15:00:00.000Z",
+    "isComplete": "",
+    "isReleased": "",
+    "currency": "EUR",
+    "orderItems": [{
+        "Product": "BR002",
+        "Quantity": "60"
+    }],
+    "refObjects": [{
+        "equipmentID": "10000303"
+    }],
+    "responsible": [{
+        "employeeID" : "9980000063",
+        "isMain": true
+    }]
+}
+
+###
+GET {{url}}/external/Bikes
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/Bikes?$filter=productID eq 'CTBR1000'
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/BikesMap
+Authorization: {{authorization}}
+
+### POST Equipment
+POST {{url}}/external/Bikes
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "equipCategory": "S",
+    "manufacturer": "CityBikes",
+    "model": "CTBR100",
+    "productID": "CTBR1000",
+    "serialNo": "0014"
+}
+
+###
+PATCH {{url}}/external/Bikes(ID='10000302',validTo=9999-12-31)
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "serialNo": "1"
+}
+
+###
+GET {{url}}/external/BikeTypes('CTBR1000')
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/MeasuringDocs
+Authorization: {{authorization}}
+
+###
+POST {{url}}/external/MeasuringDocs
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "pointID": "32",
+    "readingValue": 1,
+    "unit": "VAL"
+}
+
+###
+GET {{url}}/external/MeasuringPoints
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/MeasuringPoints?$filter=characteristic eq '881' and equipmentID eq '10000302'
+Authorization: {{authorization}}
+
+###
+POST {{url}}/external/MeasuringPoints
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "description": "Bike Status (1=AVLB, 2=Rented)",
+    "category": "M",
+    "equipmentID": "10000307",
+    "characteristic": "881"
+}
+
+# Characteristics: 879 -> Longitude, 880 -> Latitude, 881 -> State
+
+###
+GET {{url}}/external/ServiceConfirmations?$expand=confirmationItem,refObjects
+Authorization: {{authorization}}
+
+###
+POST {{url}}/external/ServiceConfirmations
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "orderID": "8000000024",
+    "isFinal": "Y",
+    "type": "SVC1",
+    "isComplete": "X",
+    "confirmationItem": [{
+        "Product": "BR002",
+        "Quantity": 150,
+        "QuantityUnit": "MIN",
+        "execEmployee": "9980000044",
+        "actualDuration": 1,
+        "durationUnit": "MIN",
+        "orderID": "8000000024",
+        "orderItemID": "10"
+    }],
+    "refObjects": [{
+        "equipmentID": "10000303"
+    }]
+}
+
+###
+GET {{url}}external/ServiceOrdersByCustomer?$expand=refObjects
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/BillingDocs
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/getMeasuringPoints(bikeID='10000303',characteristic='879')
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/GetPDF?orderID='8000000033'
+Authorization: {{authorization}}
+### ODATA V2
+GET {{url}}/external/GetPDF?orderID='8000000081'
+Authorization: {{authorization}}
+
+### ODATA V4
+GET http://localhost:4004/external/GetPDF(orderID='8000000033')
+Authorization: {{authorization}}
+
+###
+POST {{url}}/external/updateBikeLocation
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "bikeID": "10000311",
+    "latitude": 48.231701,
+    "longitude": 11.687352
+}
+
+###
+GET {{url}}/external/Products
+Authorization: {{authorization}}
+
+###
+GET {{url}}/external/ProductValuations?$filter=ID eq 'FG0511'
+Authorization: {{authorization}}
+
+###
+POST {{url}}/external/updateBikeInfos
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "manufacturer": "CityBikes",
+    "model": "CTBR100"
+}

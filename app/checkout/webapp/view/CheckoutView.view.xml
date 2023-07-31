@@ -1,0 +1,54 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" 
+    xmlns="sap.m" 
+    xmlns:grid="sap.ui.layout.cssgrid"
+    controllerName="checkout.controller.CheckoutView" 
+    displayBlock="true">
+    <Page id="page" title="{i18n>title}">
+        <content>
+            <Panel width="auto" expandable="false" id="panel3" class="checkoutPanel">
+                <headerToolbar>
+                    <Toolbar id="toolbar3">
+                        <Title text="{ path: '/ID', formatter: '.formatTitle' }" level="H2"/>
+                        <content>
+                            <ToolbarSpacer xmlns="sap.m"/>
+                        </content>                    
+                    </Toolbar>
+                </headerToolbar>
+                <content>
+                    <VBox alignItems="Center" justifyContent="Center" class="content">
+                        <VBox class="infoBox" alignItems="Center" justifyContent="Center">
+                            <Title text="Payment Information" level="H2" class="titleText"></Title>
+                            <FlexBox>
+                                <VBox class="infoItem" alignContent="Center" alignItems="Center">
+			                    	<Label text="Payment method" class="infoText"></Label>
+			                    	<Text text="{/paymentMethod}" class="infoText"></Text>
+			                    </VBox>
+                                <VBox class="infoItem" alignContent="Center" alignItems="Center">
+			                    	<Label text="{= ${path: '/paymentMethod', targetType: 'any'} === 'PayPal' ? 'E-Mail' : 'Card no.'}" class="infoText"></Label>
+			                    	<Text text="{/paymentInfo}" class="infoText"></Text>
+			                    </VBox>
+                            </FlexBox>
+                        </VBox>
+                        <FlexBox alignItems="Center" justifyContent="SpaceAround" class="content">
+                            <GenericTile header="Rental Duration" class="tile" pressEnabled="false">
+                                <TileContent unit="Minutes">
+                                    <NumericContent value="{/rentalDuration}" icon="sap-icon://pending" withMargin="false"/>
+                                </TileContent>
+                            </GenericTile>
+                            <GenericTile header="Estimated cost" subheader="({/pricePer} {/currency}/MIN)" class="tile" pressEnabled="false">
+                                <TileContent unit="{/currency}">
+                                    <NumericContent value="{/cost}" icon="sap-icon://lead" withMargin="false"/>
+                                </TileContent>
+                            </GenericTile>
+                        </FlexBox>
+                    </VBox>
+                </content>
+            </Panel>
+            <FlexBox alignItems="Center" justifyContent="Center" class="buttonBox">
+                <FlexBox width="600px" justifyContent="Center" alignItems="Center">
+                    <Button type="Emphasized" text="End your rental" press="onConfirmPress" enabled="{= ${/complete} ? false : true}"/>
+                </FlexBox>
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>

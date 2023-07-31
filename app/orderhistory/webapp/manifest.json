@@ -1,0 +1,172 @@
+{
+    "_version": "1.49.0",
+    "sap.app": {
+        "id": "orderhistory",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.10.2",
+            "toolsId": "6d1e640a-0987-4605-af1f-1090327f6943"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/external/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "orderhistory-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "orderhistory",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "icon": "sap-icon://my-sales-order"
+                }
+            }
+          }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://my-sales-order",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.116.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "orderhistory.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "ServiceOrderHistoryList",
+                    "target": "ServiceOrderHistoryList"
+                },
+                {
+                    "pattern": "ServiceOrderHistory({key}):?query:",
+                    "name": "ServiceOrderHistoryObjectPage",
+                    "target": "ServiceOrderHistoryObjectPage"
+                }
+            ],
+            "targets": {
+                "ServiceOrderHistoryList": {
+                    "type": "Component",
+                    "id": "ServiceOrderHistoryList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "ServiceOrderHistory",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "ServiceOrderHistory": {
+                                    "detail": {
+                                        "route": "ServiceOrderHistoryObjectPage"
+                                    }
+                                }
+                            },
+                            "initialLoad": true
+                        }
+                    }
+                },
+                "ServiceOrderHistoryObjectPage": {
+                    "type": "Component",
+                    "id": "ServiceOrderHistoryObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "editableHeaderContent": false,
+                            "entitySet": "ServiceOrderHistory",
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.FieldGroup#GeneratedGroup1": {
+                                    "actions": {
+                                        "billing": {
+                                            "press": "orderhistory.ext.controller.BillingAction.handleBilling",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "Download invoice"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {}
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "BikeRental"
+    }
+}

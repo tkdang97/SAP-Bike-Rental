@@ -1,0 +1,74 @@
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:vk="sap.ui.vk" xmlns:vbm="sap.ui.vbm" xmlns:template="http://schemas.sap.com/sapui5/extension/sap.ui.core.template/1" controllerName="bikemap.controller.MapView" displayBlock="true" xmlns:html="http://www.w3.org/1999/xhtml">
+    <Page id="page" title="{i18n>title}">
+        
+        <html:style>
+            .mapStyle {
+                left: 2%;
+                right: 2%;
+                top: 2%;
+                bottom: 2%;
+                height: 96%;
+                width: 96%;
+                border: 2px solid black;
+            }
+
+        </html:style>
+
+        <headerContent>
+            <Button text="Order History" press="onHistoryPress" type="Emphasized"/>
+            <Button text="My Orders" press="onMyOrdersPress" type="Emphasized"/>
+        </headerContent>
+    
+        <vk:MapContainer id="mapContainer"
+                autoAdjustHeight="false"
+                showSettings="false"
+                class="mapStyle"
+                showFullScreen="false"
+                showRectangularZoom="false"
+                showSelection="false"
+                showHome="false"
+                showZoom="false">
+                <vk:ContainerContent>
+                    <vk:content class="mapStyle">
+                        <vbm:GeoMap id="map2"
+                            width="100%"
+                            height="100%"
+                            enableAnimation="false"
+                            mapConfiguration="{localMapConfiguration>/}"
+                            initialPosition="{viewModel>/currentLongitude};{viewModel>/currentLatitude};0"
+                            initialZoom="12"
+                            openWindow="onOpenDetail" 
+                            closeWindow="onCloseDetail"
+                            >
+                            <vbm:vos>
+                                <vbm:Spots posChangeable="true"
+                                    scaleChangeable="true"
+                                    contextMenu="onContextMenuItem"
+                                    items="{/BikesMap}">
+                                    <vbm:items>
+                                        <vbm:Spot position="{longitude};{latitude};0"
+                                            type="{= ${path: 'status', targetType: 'any'} === 1 ? 'Success' : 'Error'}"
+                                            selectColor="RHLSA(0.0;1.0;1.0;1.0)"
+                                            tooltip="Bike: {serialNo}"
+                                            icon="{= ${path: 'status', targetType: 'any'} === 1 ? 'sap-icon://unlocked' : 'sap-icon://locked'}"
+                                            click="onClickSpot">
+                                        </vbm:Spot>                                
+                                    </vbm:items>
+                                    
+                                </vbm:Spots>
+                                <vbm:Spots>
+                                    <vbm:Spot position="{viewModel>/currentLongitude};{viewModel>/currentLatitude};-1"
+                                            type="Default"
+                                            selectColor="RHLSA(0.0;1.0;1.0;1.0)"
+                                            tooltip="My Current Location"
+                                            icon="sap-icon://customer"
+                                            click="onClickCurrentLocation">
+                                        </vbm:Spot>
+                                </vbm:Spots>                       
+                            </vbm:vos>
+                        </vbm:GeoMap>
+                    </vk:content>
+                </vk:ContainerContent>
+        </vk:MapContainer>
+    </Page>
+</mvc:View>

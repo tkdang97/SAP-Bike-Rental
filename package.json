@@ -1,0 +1,152 @@
+{
+    "name": "BikeRental",
+    "version": "1.0.0",
+    "description": "A (mobile) application to rent bikes",
+    "repository": "https://gitlab.lrz.de/tkdang/sap-bike-rental",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@cap-js-community/odata-v2-adapter": "^1.11.4",
+        "@sap-cloud-sdk/http-client": "^3.2.0",
+        "@sap/cds": "^6",
+        "@sap/cds-hana": "^2.0.0",
+        "@sap/hana-client": "^2.17.21",
+        "@sap/xssec": "^3.2.17",
+        "express": "^4",
+        "hdb": "^0.19.5",
+        "passport": "^0.6.0"
+    },
+    "devDependencies": {
+        "@sap/eslint-plugin-ui5-jsdocs": "^2.0.5",
+        "@sap/ux-specification": "^1.108.9",
+        "@sapui5/ts-types": "^1.92.2",
+        "eslint": "^7.32.0",
+        "rimraf": "^3.0.2",
+        "sqlite3": "^5"
+    },
+    "scripts": {
+        "start": "cds-serve",
+        "watch-project1": "cds watch --open project1/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-bikemap": "cds watch --open bikemap/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-serviceorders_by_customer": "cds watch --open serviceorders_by_customer/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-checkout": "cds watch --open checkout/webapp/index.html?sap-ui-xx-viewCache=false",
+        "undeploy": "cf undeploy BikeRental --delete-services --delete-service-keys --delete-service-brokers",
+        "build": "rimraf resources mta_archives && mbt build --mtar archive",
+        "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+        "watch-orderhistory": "cds watch --open orderhistory/webapp/index.html?sap-ui-xx-viewCache=false"
+    },
+    "cds": {
+        "requires": {
+            "API_BUSINESS_PARTNER": {
+                "kind": "odata-v2",
+                "model": "srv/external/API_BUSINESS_PARTNER",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata/sap/API_BUSINESS_PARTNER"
+                },
+                "csrf": true
+            },
+            "OP_API_EQUIPMENT": {
+                "kind": "odata-v2",
+                "model": "srv/external/OP_API_EQUIPMENT",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata/sap/API_EQUIPMENT"
+                },
+                "csrf": true
+            },
+            "OP_API_SERVICE_ORDER_SRV_0001": {
+                "kind": "odata-v2",
+                "model": "srv/external/OP_API_SERVICE_ORDER_SRV_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata/sap/API_SERVICE_ORDER_SRV"
+                },
+                "csrf": true
+            },
+            "OP_PRODUCT_0001": {
+                "kind": "odata",
+                "model": "srv/external/OP_PRODUCT_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata4/sap/api_product/srvd_a2x/sap/product/0001"
+                },
+                "csrf": true
+            },
+            "MEASUREMENTDOCUMENT_0001": {
+                "kind": "odata",
+                "model": "srv/external/MEASUREMENTDOCUMENT_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata4/sap/api_measurementdocument/srvd_a2x/sap/measurementdocument/0001"
+                },
+                "csrf": true
+            },
+            "OP_API_MEASURINGPOINT_0001": {
+                "kind": "odata",
+                "model": "srv/external/OP_API_MEASURINGPOINT_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata4/sap/api_measuringpoint/srvd_a2x/sap/measuringpoint/0001"
+                },
+                "csrf": true
+            },
+            "OP_API_SERVICE_CONFIRMATION_SRV_0001": {
+                "kind": "odata-v2",
+                "model": "srv/external/OP_API_SERVICE_CONFIRMATION_SRV_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata/sap/API_SERVICE_CONFIRMATION_SRV"
+                },
+                "csrf": true
+            },
+            "OP_API_BILLING_DOCUMENT_SRV_0001": {
+                "kind": "odata-v2",
+                "model": "srv/external/OP_API_BILLING_DOCUMENT_SRV_0001",
+                "credentials": {
+                    "destination": "GLOBAL_BIKE_RENTAL_S4H",
+                    "path": "/sap/opu/odata/sap/API_BILLING_DOCUMENT_SRV"
+                },
+                "csrf": true
+            },
+            "db": {
+                "kind": "hana-cloud"
+            },
+            "[production]": {
+                "auth": "xsuaa"
+            },
+            "[development]": {
+                "auth": {
+                    "strategy": "mocked",
+                    "users": {
+                        "alice": {
+                            "password": "alice",
+                            "roles": [
+                                "customer",
+                                "admin"
+                            ]
+                        },
+                        "bob": {
+                            "password": "bob",
+                            "roles": [
+                                "customer"
+                            ]
+                        }
+                    }
+                },
+                "db": {
+                    "kind": "sqlite"
+                }
+            }
+        },
+        "hana": {
+            "deploy-format": "hdbtable"
+        }
+    },
+    "sapux": [
+        "app/project1",
+        "app/serviceorders_by_customer",
+        "app/historie",
+        "app/orderhistory"
+    ]
+}

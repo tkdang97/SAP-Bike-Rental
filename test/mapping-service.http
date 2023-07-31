@@ -1,0 +1,32 @@
+@url = http://localhost:4004/v2
+@authorization = Basic alice:alice
+
+###
+GET {{url}}/mapping/customersMap
+Authorization: {{authorization}}
+
+###
+POST {{url}}/mapping/customersMap
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "email": "silas.meilbeck@tum.de",
+    "bupaID": "10100001",
+    "paymentMethod": "Credit Card",
+    "cardNo": "378282246310005"
+}
+
+###
+GET {{url}}/mapping/getPaymentInfo
+Authorization: {{authorization}}
+
+###
+POST {{url}}/mapping/updatePaymentInfo
+Authorization: {{authorization}}
+Content-Type: application/json
+
+{
+    "paymentMethod": "PayPal",
+    "cardNo": null
+}
